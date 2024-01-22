@@ -9,9 +9,7 @@
 
 	// Form Data
 	const formData = {
-		name: 'Jane Doe',
-		tel: '214-555-1234',
-		email: 'jdoe@email.com'
+		selectedWidget: null
 	};
 
 	// We've created a custom submit function to pass the response and close the modal.
@@ -65,6 +63,7 @@
 		<article>{$modalStore[0].body ?? '(body missing)'}</article>
 		<!-- Enable for debugging: -->
 		<form class="modal-form {cForm}">
+<<<<<<< HEAD
 			<!-- <label class="label">
 				<span>Name</span>
 
@@ -128,6 +127,8 @@
 					</div>
 				{/if} -->
 
+=======
+>>>>>>> collectionbuilder
 			<!-- update to use GuiSchema -->
 			{#if $modalStore[0].value}
 				<div class="mb-2 border-y text-center text-primary-500">
@@ -142,7 +143,10 @@
 					{/each}
 				</div>
 			{/if}
+<<<<<<< HEAD
 			<!-- </label> -->
+=======
+>>>>>>> collectionbuilder
 		</form>
 		<!-- prettier-ignore -->
 		<footer class="modal-footer {parent.regionFooter}">

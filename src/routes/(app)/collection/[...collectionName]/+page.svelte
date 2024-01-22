@@ -10,18 +10,48 @@
 	import { mode, collection } from '@stores/store';
 	import VerticalList from '@components/VerticalList.svelte';
 	import IconifyPicker from '@components/IconifyPicker.svelte';
+<<<<<<< HEAD
+=======
+	import widgets from '@components/widgets';
+>>>>>>> collectionbuilder
 	import { obj2formData } from '@utils/utils';
 	import axios from 'axios';
 
 	console.log('mode:', $mode);
+	mode.set('edit');
+	console.log('mode:', $mode);
+
+	// Access the data fetched from the server
+	let { formCollectionName, collectionData } = $page.data;
+	let collectionName = formCollectionName || '';
+
+	console.log('collection:', $collection);
+	console.log('collectionData:', $page.data.collectionData);
+	
 
 	// Required default widget fields
+<<<<<<< HEAD
+=======
+	let name = $mode == 'edit' ? $page.data.collectionData.name : '';
+	let icon = $mode == 'edit' ? $page.data.collectionData.icon : '';
+	let description = $mode == 'edit' ? $page.data.collectionData.description : '';
+	let status = $mode == 'edit' ? $page.data.collectionData.status : 'unpublish';
+	let slug = $mode == 'edit' ? $page.data.collectionData.slug : name;
+
+	let selected_widget: keyof typeof widgets | null = null;
+
+	console.log('collectionName:', name);
+	console.log('collectionIcon:', icon);
+	console.log('collectionStatus:', status);
+	console.log('collectionSlug:', slug);
+>>>>>>> collectionbuilder
 
 	let DBName = '';
 	let searchQuery = '';
 	let iconselected: any = '';
 	const statuses = ['published', 'unpublished', 'draft', 'schedule', 'cloned'];
 	let autoUpdateSlug = true;
+	let expanded = false;
 
 	// skeleton
 	import { getToastStore, TabGroup, Tab, getModalStore, popup } from '@skeletonlabs/skeleton';
@@ -29,9 +59,46 @@
 	import type { ModalSettings, ModalComponent, PopupSettings } from '@skeletonlabs/skeleton';
 	const modalStore = getModalStore();
 
+	//modal to display widget options
+	import ModalSelectWidget from './ModalSelectWidget.svelte';
+	import ModalWidgetForm from './ModalWidgetForm.svelte';
+
+	function modalSelectWidget(selected: any): void {
+		const c: ModalComponent = { ref: ModalSelectWidget };
+		const modal: ModalSettings = {
+			type: 'component',
+			component: c,
+			title: 'Select a Widget',
+			body: 'Select your widget and then press submit.',
+			value: selected, // Pass the selected widget as the initial value
+			response: (r: any) => {
+				console.log('response modalSelectWidget:', r);
+				const { selected_widget } = r; // Extract the selected widget from the response object
+				modalWidgetForm(selected_widget); // Call the `modalWidgetForm` function with the selected widget as the argument
+			}
+		};
+		modalStore.trigger(modal);
+	}
+
+	console.log('check selected_widget:', selected_widget);
+
+	function modalWidgetForm(selected_widget: any): void {
+		const c: ModalComponent = { ref: ModalWidgetForm };
+		console.log('selected_widget:', selected_widget);
+		const modal: ModalSettings = {
+			type: 'component',
+			component: c,
+			title: 'Define your Widget: ' + selected_widget.selectedWidget, // Access the selectedWidget property of the object
+			body: 'Setup your widget and then press submit.',
+			value: selected_widget, // Pass the selected widget as the initial value
+			response: (r: any) => console.log('response modalWidgetForm:', r)
+		};
+		modalStore.trigger(modal);
+	}
 	//ParaglideJS
 	import * as m from '@src/paraglide/messages';
 
+<<<<<<< HEAD
 	// Access the data fetched from the server
 	let { isEditMode, formCollectionName, collectionData } = $page.data;
 	let collectionName = formCollectionName || '';
@@ -49,13 +116,17 @@
 
 	// $: fromCollectionName = formDataStore.collectionName;
 	//let isEditMode = collectionName !== 'new';
+=======
+	
+>>>>>>> collectionbuilder
 
 	// Page Title
-	$: pageTitle = isEditMode
-		? `Edit <span class="text-primary-500">${collectionName} </span> Collection`
-		: collectionName
-			? `Create <span class="text-primary-500"> ${collectionName} </span> Collection`
-			: `Create <span class="text-primary-500"> new </span> Collection`;
+	$: pageTitle =
+		$mode == 'edit'
+			? `Edit <span class="text-primary-500">${collectionName} </span> Collection`
+			: collectionName
+				? `Create <span class="text-primary-500"> ${collectionName} </span> Collection`
+				: `Create <span class="text-primary-500"> new </span> Collection`;
 
 	let lockedName: boolean = true;
 
@@ -84,6 +155,7 @@
 		autoUpdateSlug = false;
 	}
 
+<<<<<<< HEAD
 	//modal to display widget options
 	import MyCustomComponent from './ModalWidgetForm.svelte';
 
@@ -100,7 +172,21 @@
 		modalStore.trigger(modal);
 	}
 
+=======
+>>>>>>> collectionbuilder
 	//  Widget data
+
+	// let collectionObject = JSON.parse(collectionData);
+	// let name = collectionObject.name;
+	// let icon = collectionObject.icon;
+	// let description = collectionObject.description;
+	// let status = collectionObject.status;
+	// let slug = collectionObject.slug;
+	// let fields = collectionObject.fields;
+	// let permission = collectionObject.permissions;
+	// if (fields) {
+	// 	fields = fields.map((item, index) => ({ ...item, id: index + 1 }));
+	// }
 	// export let items: any;
 	// console.log('dataItem', items);
 	let items = [
@@ -141,6 +227,7 @@
 				'Content-Type': 'multipart/form-data'
 			}
 		});
+<<<<<<< HEAD
 		// Append other form fields
 
 		// Send data to the server
@@ -150,6 +237,8 @@
 		// });
 
 		// Handle the server response as needed
+=======
+>>>>>>> collectionbuilder
 
 		// Trigger the toast
 		const t = {
@@ -191,22 +280,13 @@
 	};
 </script>
 
-<!-- {#await $page}
-	<p>Loading...</p>
-{:then}
-	
-	<div>
-		<p>Edit Mode: {isEditMode ? 'Yes' : 'No'}</p>
-		<p>Collection Name: {formCollectionName}</p>
-		
-{/await} -->
-
 <div class="align-center mb-2 mt-2 flex justify-between dark:text-white">
 	<PageTitle name={pageTitle} icon="ic:baseline-build" />
-	{#if isEditMode}
+	{#if ($mode = 'edit')}
 		<button type="button" on:click={handleCollectionSave} class="variant-filled-primary btn mt-2 justify-end dark:text-black">Save</button>
 	{/if}
 </div>
+
 <div class="wrapper">
 	<p class="mb-2 hidden text-center text-primary-500 sm:block">{m.collection_helptext()}</p>
 
@@ -395,6 +475,7 @@
 
 				<div class="mt-2 flex items-center justify-center gap-3">
 					<!-- <button class="variant-filled-tertiary btn" on:click={modalComponentForm}>{m.collection_widgetfield_addFields()}</button> -->
+<<<<<<< HEAD
 					<button on:click={() => (expanded = !expanded)} class="variant-filled-tertiary btn" class:selected={expanded}
 						>{m.collection_widgetfield_addFields()}</button
 					>
@@ -405,6 +486,14 @@
 				</div>
 
 				{#if expanded}
+=======
+					<button on:click={modalSelectWidget} class="variant-filled-tertiary btn" class:selected={expanded}
+						>{m.collection_widgetfield_addFields()}
+					</button>
+				</div>
+
+				<!-- {#if expanded}
+>>>>>>> collectionbuilder
 					<div class="mb-3 border-b text-center text-primary-500">Choose your Widget</div>
 					<div class="flex flex-wrap items-center justify-center gap-2">
 						{#each widget_keys as item}
@@ -420,7 +509,11 @@
 							</button>
 						{/each}
 					</div>
+<<<<<<< HEAD
 				{/if}
+=======
+				{/if} -->
+>>>>>>> collectionbuilder
 
 				<div class=" flex items-center justify-between">
 					<button type="button" on:click={() => (tabSet = 1)} class="variant-filled-secondary btn mt-2 justify-end"

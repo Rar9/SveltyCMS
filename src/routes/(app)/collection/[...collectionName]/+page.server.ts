@@ -53,6 +53,7 @@ import { auth, getCollectionModels } from '@api/db';
 import { mode, collections } from '@stores/store';
 import { validate } from '@utils/utils';
 import { DEFAULT_SESSION_COOKIE_NAME } from 'lucia';
+<<<<<<< HEAD
 import { updateCollections } from '@collections';
 import { compile } from '@api/compile/compile';
 import fs from 'fs';
@@ -65,6 +66,9 @@ import { Project, SourceFile } from 'ts-morph';
 
 
 type fields = ReturnType<WidgetType[keyof WidgetType]>;
+=======
+import { mode, collections } from '@stores/store';
+>>>>>>> collectionbuilder
 
 // Load function that handles authentication, user validation, and data fetching
 export async function load(event) {
@@ -98,6 +102,7 @@ export async function load(event) {
 		mode.subscribe((mode) => {
 			console.log('Current mode:', mode);
 		});
+<<<<<<< HEAD
 		const isEditMode = collectionNameParam !== 'new';
 
 		return {
@@ -107,11 +112,19 @@ export async function load(event) {
 			formCollectionName: collectionNameParam,
 			collectionData: collectionData
 			// }
+=======
+
+		return {
+			user: user,
+			formCollectionName: collectionNameParam,
+			collectionData: collectionData
+>>>>>>> collectionbuilder
 		};
 	} else {
 		return redirect(302, '/login');
 	}
 }
+<<<<<<< HEAD
 
 export const actions: Actions = {
 	saveCollections : async ({ request }) => {
@@ -240,3 +253,5 @@ async function goThrough(object: any): Promise<string> {
 
 	return Array.from(imports).join('\n');
 }
+=======
+>>>>>>> collectionbuilder
