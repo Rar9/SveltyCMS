@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { roles, type permissions } from '@collections/types';
+	import { roles, color, icon, type permissions } from '@collections/types';
 	import { getToastStore } from '@skeletonlabs/skeleton';
 	import { permissionStore } from '@src/stores/store';
 
@@ -7,12 +7,18 @@
 	import * as m from '@src/paraglide/messages';
 	import { page } from '$app/stores';
 	type Role = keyof typeof roles;
+	type Color = keyof typeof color;
+	type Icon = keyof typeof icon;
 	type Permission = keyof permissions[Role];
 
 	let rolesArray: {
 		name: Role;
+		icon: Icon;
+		color: Color;
 		permissions: permissions[Role];
 	}[] = [];
+
+	console.log('rolesArray', rolesArray);
 
 	const toastStore = getToastStore();
 	let MorePermissions = true;
@@ -259,6 +265,7 @@
 			// 		// Update the role's permission
 			role.permissions = { ...role.permissions, [typedPermission]: !role.permissions[typedPermission] };
 
+<<<<<<< HEAD
 			// 		// Update the button map toggle based on the new permission state
 			// 		// buttonMap[permission].toggle = role.permissions[typedPermission];
 			selectedButtonMap[role.name][permission].toggle = role.permissions[typedPermission];
@@ -270,6 +277,22 @@
 			// 	}
 			// } else {
 			// 	console.error('Role or role.permissions is undefined');
+=======
+			if (buttonInfo) {
+				// Update the role's permission
+				role.permissions = { ...role.permissions, [typedPermission]: !role.permissions[typedPermission] };
+
+				// Update the button map toggle based on the new permission state
+				buttonMap[permission].toggle = role.permissions[typedPermission];
+
+				// Update the roles array
+				rolesArray = [...rolesArray];
+			} else {
+				console.error('Button information not found for the permission:', permission);
+			}
+		} else {
+			console.error('Role or role.permissions is undefined');
+>>>>>>> collectionbuilder
 		}
 	}
 
@@ -297,8 +320,13 @@
 					// Update the role's permission
 					role.permissions = { ...role.permissions, [typedPermission]: !allRolesHavePermission };
 
+<<<<<<< HEAD
 					// Update the button map
 					selectedButtonMap[role.name][permission].toggle = !allRolesHavePermission;
+=======
+					// // Update the button map
+					// buttonMap[permission].toggle = !allRolesHavePermission;
+>>>>>>> collectionbuilder
 				} else {
 					console.error('Button information not found for the permission:', permission);
 				}
@@ -327,8 +355,9 @@
 	}
 
 	// output the selected Permission setting
+	let truePermissions = {};
 	$: {
-		let truePermissions = {};
+		truePermissions = {};
 		rolesArray.forEach(({ name, permissions }) => {
 			if (permissions) {
 				Object.entries(permissions).forEach(([key, value]) => {
@@ -442,6 +471,7 @@
 								<!-- Check if the permission exists in the role's permissions -->
 								<td class="bg-white dark:bg-surface-900">
 									<button
+<<<<<<< HEAD
 										class="btn w-full {isPermissionsEmpty
 											? permissionList[role.name]?.[permission]
 												? selectedButtonMap[role.name][permission].enabled
@@ -449,13 +479,15 @@
 											: selectedButtonMap[role.name][permission].toggle
 												? selectedButtonMap[role.name][permission].enabled
 												: selectedButtonMap[role.name][permission].disabled}"
+=======
+										class="btn w-full {truePermissions[role.name]?.[permission] ? buttonMap[permission].enabled : buttonMap[permission].disabled}"
+>>>>>>> collectionbuilder
 										on:click={(event) => {
 											togglePermission(event, role, permission, index);
 										}}
 									>
 										<iconify-icon icon={buttonMap[permission]?.icon} width="16" class="mr-1 sm:hidden md:inline-block"></iconify-icon>
 										<span class="hidden sm:inline-block">{permission.charAt(0).toUpperCase() + permission.slice(1)}</span>
-										<!--{buttonMap[permission].toggle}-->
 									</button>
 								</td>
 							{/each}

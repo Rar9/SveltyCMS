@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // import { redirect } from '@sveltejs/kit';
 // import { auth } from '@api/db';
 // import { validate } from '@utils/utils';
@@ -69,15 +70,29 @@ type fields = ReturnType<WidgetType[keyof WidgetType]>;
 =======
 import { mode, collections } from '@stores/store';
 >>>>>>> collectionbuilder
+=======
+import { redirect, type Actions } from '@sveltejs/kit';
+import { auth, getCollectionModels } from '@api/db';
+import { validate } from '@utils/utils';
+import { DEFAULT_SESSION_COOKIE_NAME } from 'lucia';
+import type { WidgetType } from '@components/widgets';
+import fs from 'fs';
+import prettier from 'prettier';
+import prettierConfig from '@root/.prettierrc.json';
+import { updateCollections } from '@collections';
+import { compile } from '@api/compile/compile';
+>>>>>>> collectionbuilder
 
-// Load function that handles authentication, user validation, and data fetching
+type fields = ReturnType<WidgetType[keyof WidgetType]>;
+
+// Define load function as async function that takes an event parameter
 export async function load(event) {
 	// Get session cookie value as string
 	const session = event.cookies.get(DEFAULT_SESSION_COOKIE_NAME) as string;
 	// Validate user using auth and session value
 	const user = await validate(auth, session);
-
 	// If user status is 200, return user object
+<<<<<<< HEAD
 	if (user.status === 200) {
 		// Get collection name from URL parameters
 		const collectionNameParam = event.params.collectionName;
@@ -119,11 +134,17 @@ export async function load(event) {
 			formCollectionName: collectionNameParam,
 			collectionData: collectionData
 >>>>>>> collectionbuilder
+=======
+	if (user.status == 200) {
+		return {
+			user: user.user
+>>>>>>> collectionbuilder
 		};
 	} else {
-		return redirect(302, '/login');
+		redirect(302, `/login`);
 	}
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 export const actions: Actions = {
@@ -198,6 +219,74 @@ export const actions: Actions = {
 			}
 		  }
 		  sourceFile.saveSync();
+=======
+
+// Create or Update Collection
+export const actions: Actions = {
+	saveCollection: async ({ request }) => {
+		const formData = await request.formData();
+		console.log(formData);
+		const fieldsData = formData.get('fields') as string;
+		const originalName = JSON.parse(formData.get('originalName') as string);
+		const collectionName = JSON.parse(formData.get('collectionName') as string);
+		const collectionIcon = JSON.parse(formData.get('icon') as string);
+		const collectionSlug = JSON.parse(formData.get('slug') as string);
+		const collectionDescription = JSON.parse(formData.get('description') as string);
+		const collectionStatus = JSON.parse(formData.get('status') as string);
+		// Permissions
+		const permissionsData = JSON.parse(formData.get('permissions') as string);
+		// Widgets Fields
+		const fields = JSON.parse(fieldsData) as Array<fields>;
+		const imports = await goThrough(fields);
+
+		// Generate fields as formatted string
+		//console.log(fields);
+
+		// const fieldsString = fields.map((field) => `\t\twidgets.${field.widget.key}(${JSON.stringify(field, null, 2)})`).join(',\n');
+
+		let content = `
+	${imports}
+	import widgets from '@components/widgets';
+	import { roles } from './types';
+	import type { Schema } from './types';
+	const schema: Schema = {
+		// Collection Name coming from filename so not needed
+
+		// Optional & Icon, status, slug
+		// See for possible Icons https://icon-sets.iconify.design/
+		icon: '${collectionIcon}',
+	    status: '${collectionStatus}',
+		description: '${collectionDescription}',
+	    slug: '${collectionSlug}',
+
+		// Collection Permissions by user Roles
+		permissions: {
+			${permissionsData}
+		},
+
+		// Defined Fields that are used in your Collection
+		// Widget fields can be inspected for individual options
+		fields: [
+			${fields}
+		]
+	};
+	export default schema;
+	
+	`;
+		content = content.replace(/\\n|\\t/g, '').replace(/\\/g, '');
+
+		content = content.replace(/["']🗑️|🗑️["']/g, '').replace(/🗑️/g, '');
+		console.log('content:', content);
+		content = await prettier.format(content, { ...(prettierConfig as any), parser: 'typescript' });
+		if (originalName && originalName != collectionName) {
+			fs.renameSync(`${import.meta.env.collectionsFolderTS}/${originalName}.ts`, `${import.meta.env.collectionsFolderTS}/${collectionName}.ts`);
+		}
+		fs.writeFileSync(`${import.meta.env.collectionsFolderTS}/${collectionName}.ts`, content);
+		await compile();
+		await updateCollections(true);
+		await getCollectionModels();
+		return null;
+>>>>>>> collectionbuilder
 	},
 
 	saveConfig: async ({ request }) => {
@@ -253,5 +342,8 @@ async function goThrough(object: any): Promise<string> {
 
 	return Array.from(imports).join('\n');
 }
+<<<<<<< HEAD
+=======
+>>>>>>> collectionbuilder
 =======
 >>>>>>> collectionbuilder
