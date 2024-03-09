@@ -63,6 +63,9 @@ systemLanguage.subscribe((val) => {
 });
 
 //  ------------ Other ------------
+// User
+export const tableHeaders = ['id', 'email', 'username', 'role', 'createdAt'] as const;
+
 // TranslationStatus.svelte modal
 export const translationStatusOpen = writable(false);
 

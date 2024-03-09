@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { roles } from '@collections/types';
 	import { invalidateAll } from '$app/navigation';
+
+	// Auth
+	import { roles } from '@auth/types';
 
 	// Props
 	/** Exposes parent props to this component. */
@@ -164,7 +166,7 @@
 		</div>
 
 		<!-- admin area -->
-		{#if user?.role == roles.admin}
+		{#if user?.role == 'admin'}
 			<div class="flex flex-col gap-2 sm:flex-row">
 				<div class="border-b text-center sm:w-1/4 sm:border-0 sm:text-left">{m.modaledit_tokenuserrole()}</div>
 				<div class="flex-auto">

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { roles } from '@collections/types';
+	import { roles } from '@auth/types';
 	import { mode, permissionStore } from '@src/stores/store';
 
 	// Skeleton

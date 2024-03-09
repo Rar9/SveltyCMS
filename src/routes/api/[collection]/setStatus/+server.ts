@@ -1,21 +1,23 @@
 // Import the necessary modules.
 import { getCollections } from '@src/collections';
 import type { RequestHandler } from './$types';
+
+// Auth
 import { auth, getCollectionModels } from '@src/routes/api/db';
-import { validate } from '@src/utils/utils';
-import { DEFAULT_SESSION_COOKIE_NAME } from 'lucia';
+import { SESSION_COOKIE_NAME } from '@src/auth';
 
 // Define the PATCH request handler.
 export const PATCH: RequestHandler = async ({ params, request, cookies }) => {
 	// Get the session cookie.
-	const session = cookies.get(DEFAULT_SESSION_COOKIE_NAME) as string;
+	const session_id = cookies.get(SESSION_COOKIE_NAME) as string;
 
 	// Validate the session.
-	const user = await validate(auth, session);
+	const user = await auth.validateSession(session_id);
 
 	// Check if the user has write access to the collection.
-	const has_write_access = (await getCollections()).find((c: any) => c.name == params.collection)?.permissions?.[user.user.role]?.write ?? true;
-	if (user.status != 200 || !has_write_access) {
+	const has_write_access = (await getCollections()).find((c: any) => c.name == params.collection)?.permissions?.[user.role]?.write ?? true;
+
+	if (user || !has_write_access) {
 		return new Response('', { status: 403 });
 	}
 

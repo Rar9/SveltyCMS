@@ -13,7 +13,9 @@
 	export let addUserForm: PageData['addUserForm'];
 
 	import FloatingInput from '@components/system/inputs/floatingInput.svelte';
-	import { roles } from '@collections/types';
+
+	// Auth
+	import { roles } from '@auth/types';
 
 	// Props
 	/** Exposes parent props to this component. */

@@ -1,8 +1,12 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { roles } from '@collections/types';
-	import FloatingInput from '@components/system/inputs/floatingInput.svelte';
 	import { invalidateAll } from '$app/navigation';
+
+	// Components
+	import FloatingInput from '@components/system/inputs/floatingInput.svelte';
+
+	// Auth
+	import { roles } from '@auth/types';
 
 	// Props
 	/** Exposes parent props to this component. */
@@ -108,7 +112,7 @@
 		</div>
 
 		<!-- admin area -->
-		{#if isGivenData ? role : user?.role == roles.admin}
+		{#if isGivenData && role === 'admin'}
 			<!-- Email field -->
 			<div class="group relative z-0 mb-6 w-full">
 				<iconify-icon icon="mdi:email" width="18" class="absolute left-0 top-3.5 text-gray-400" />
@@ -233,7 +237,7 @@
 
 		<!-- admin area -->
 		<!-- TODO:  Self or last first user cannot change role -->
-		{#if user?.role == roles.admin}
+		{#if user?.role == 'admin'}
 			<div class="flex flex-col gap-2 sm:flex-row">
 				<div class="border-b text-center sm:w-1/4 sm:border-0 sm:text-left">{m.modaleditform_userrole()}</div>
 				<div class="flex-auto">

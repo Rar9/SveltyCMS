@@ -64,7 +64,7 @@
 	import type { ModalComponent, ModalSettings } from '@skeletonlabs/skeleton';
 	import AdminArea from './components/AdminArea.svelte';
 
-	import { roles } from '@collections/types';
+	import { roles } from '@auth/types';
 
 	// let avatarSrc = writable(user?.avatar);
 	avatarSrc.set(user?.avatar);
@@ -251,7 +251,7 @@
 	</div>
 
 	<!-- admin area -->
-	{#if user?.role == roles.admin}
+	{#if user?.role === 'admin'}
 		<div class="wrapper2">
 			<AdminArea {data} />
 		</div>

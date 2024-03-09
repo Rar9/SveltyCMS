@@ -1,7 +1,7 @@
 <script lang="ts">
 	// Stores
 	import { page } from '$app/stores';
-	import { collectionValue, mode, collections, collection } from '@stores/store';
+	import { collectionValue, mode, collections, collection, contentLanguage } from '@stores/store';
 
 	// Components
 	import Fields from '@components/Fields.svelte';
@@ -32,6 +32,7 @@
 		}
 		ForwardBackward = false;
 	});
+
 	onDestroy(() => {
 		// alert('onDestroy');
 		unsubscribe();

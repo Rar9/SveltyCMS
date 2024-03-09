@@ -2,7 +2,7 @@
 	import { dev } from '$app/environment';
 	import { publicEnv } from '@root/config/public';
 
-	//ParaglideJS
+	// ParaglideJS
 	import * as m from '@src/paraglide/messages';
 	import { languageTag } from '@src/paraglide/runtime';
 

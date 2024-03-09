@@ -14,9 +14,8 @@ import type { z } from 'zod';
 import { get } from 'svelte/store';
 import { contentLanguage, entryData, mode, collections, collection } from '@stores/store';
 
-// lucia Auth
-import type { User, Auth } from 'lucia';
-import { UserSchema } from '@src/collections/Auth';
+// Auth
+import type { User } from '@src/auth/types';
 
 export const config = {
 	headers: {
@@ -362,7 +361,7 @@ export async function saveFormData({ data, _collection, _mode, id }: { data: any
 						{
 							revisionNumber: $entryData.__v.length, // Start the revision number at the current length of the __v array
 							editedAt: new Date().getTime().toString(),
-							editedBy: { Username: UserSchema.username },
+							// editedBy: { Username: UserSchema.username },
 							changes: {}
 						}
 					]
@@ -492,17 +491,17 @@ export async function extractData(fieldsData: any) {
 }
 
 // Validates a user session.
-export async function validate(auth: Auth, sessionID: string | null) {
-	// If the session ID is null, return a 404 status with an empty user object.
-	if (!sessionID) {
-		return { user: {} as User, status: 404 };
-	}
-	const resp = await auth.validateSession(sessionID).catch(() => null);
+// export async function validate(auth: Auth, sessionID: string | null) {
+// 	// If the session ID is null, return a 404 status with an empty user object.
+// 	if (!sessionID) {
+// 		return { user: {} as User, status: 404 };
+// 	}
+// 	const resp = await auth.validateSession(sessionID).catch(() => null);
 
-	if (!resp) return { user: {} as User, status: 404 };
+// 	if (!resp) return { user: {} as User, status: 404 };
 
-	return { user: resp.user as unknown as User, status: 200 };
-}
+// 	return { user: resp.user as unknown as User, status: 200 };
+// }
 
 /**
  * Formats a file size in bytes to the appropriate unit (bytes, kilobytes, megabytes, or gigabytes).
@@ -607,8 +606,14 @@ function deepCopy(obj: any) {
 }
 
 export function debounce(delay?: number) {
-	let timer: any;
+	let timer;
+	let first = true;
 	return (fn: () => void) => {
+		if (first) {
+			fn();
+			first = false;
+			return;
+		}
 		clearTimeout(timer);
 		timer = setTimeout(() => {
 			fn();
@@ -624,7 +629,6 @@ export function validateZod<T>(schema: z.Schema<T>, value?: T): null | { [P in k
 		return res.error.flatten().fieldErrors as any;
 	}
 }
-
 // This function generates a unique ID.
 export function generateUniqueId() {
 	// Get the current timestamp and convert it to a base-36 string.

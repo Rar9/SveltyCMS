@@ -1,30 +1,30 @@
 <script lang="ts">
-	import { roles } from '@collections/types';
+	import { roles } from '@auth/types';
 
 	export let value: string;
 	// Grab Users from one Location only
 
 	let classes = `${
-		value === roles.admin
+		value === 'admin'
 			? 'badge gradient-primary'
-			: value === roles.developer
+			: value === 'developer'
 				? 'badge gradient-pink'
-				: value === roles.editor
+				: value === 'editor'
 					? 'badge gradient-tertiary'
-					: value === roles.user
+					: value === 'user'
 						? 'badge gradient-secondary'
 						: 'text-white'
 	} rounded-full text-white`;
 </script>
 
 <div class={classes}>
-	{#if value == roles.admin}
+	{#if value === 'admin'}
 		<iconify-icon icon="material-symbols:verified-outline" width="20" class="mr-2" /> {value}
-	{:else if value == roles.developer}
+	{:else if value === 'developer'}
 		<iconify-icon icon="material-symbols:supervised-user-circle" width="20" class="mr-2" /> {value}
-	{:else if value == roles.editor}
+	{:else if value === 'editor'}
 		<iconify-icon icon="mdi:user-edit" width="20" class="mr-2" /> {value}
-	{:else if value == roles.user}
+	{:else if value === 'user'}
 		<iconify-icon icon="material-symbols:supervised-user-circle" width="20" class="mr-2" /> {value}
 	{/if}
 </div>

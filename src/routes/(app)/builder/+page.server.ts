@@ -1,7 +1,8 @@
 import { redirect, type Actions } from '@sveltejs/kit';
 import { auth, getCollectionModels } from '@api/db';
-import { validate } from '@utils/utils';
-import { DEFAULT_SESSION_COOKIE_NAME } from 'lucia';
+// Auth
+import { SESSION_COOKIE_NAME } from '@src/auth';
+
 import type { WidgetType } from '@components/widgets';
 import fs from 'fs';
 import prettier from 'prettier';
@@ -14,13 +15,14 @@ type fields = ReturnType<WidgetType[keyof WidgetType]>;
 // Define load function as async function that takes an event parameter
 export async function load(event) {
 	// Get session cookie value as string
-	const session = event.cookies.get(DEFAULT_SESSION_COOKIE_NAME) as string;
+	const session_id = event.cookies.get(SESSION_COOKIE_NAME) as string;
+
 	// Validate user using auth and session value
-	const user = await validate(auth, session);
+	const user = await auth.validateSession(session_id);
 	// If user status is 200, return user object
-	if (user.status == 200) {
+	if (user) {
 		return {
-			user: user.user
+			user: user
 		};
 	} else {
 		redirect(302, `/login`);
@@ -50,7 +52,7 @@ export const actions: Actions = {
 		let content = `
 	${imports}
 	import widgets from '@components/widgets';
-	import { roles } from './types';
+	
 	import type { Schema } from './types';
 	const schema: Schema = {
 		// Collection Name coming from filename so not needed
@@ -64,13 +66,19 @@ export const actions: Actions = {
 
 		// Collection Permissions by user Roles
 		permissions: {
-			[roles.user]: {
-				read: true
-			},
-			[roles.admin]: {
-				write: true
-			}
+		developer: {
+			read: true,
+			write: true,
+			delete: true
 		},
+		editor: {
+			read: true,
+			write: true
+		},
+		user: {
+			read: true
+		}
+	},
 
 		// Defined Fields that are used in your Collection
 		// Widget fields can be inspected for individual options

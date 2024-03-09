@@ -24,6 +24,7 @@ const config = {
 		alias: {
 			'@src': './src/*',
 			'@api': './src/routes/api/*',
+			'@auth': './src/auth/*',
 			'@components': './src/components/*',
 			'@collections': './src/collections/*',
 			'@utils': './src/utils/*',

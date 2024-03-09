@@ -1,27 +1,31 @@
-// Import the necessary modules.
-import { getCollections } from '@src/collections';
-import type { RequestHandler } from './$types';
-import { auth, getCollectionModels } from '@src/routes/api/db';
-import { getFieldName, parse, saveImages, validate } from '@src/utils/utils';
-import { DEFAULT_SESSION_COOKIE_NAME } from 'lucia';
-import widgets from '@src/components/widgets';
-import type { Schema } from '@src/collections/types';
 import { publicEnv } from '@root/config/public';
+import { getCollections } from '@src/collections';
+import type { Schema } from '@src/collections/types';
+import type { RequestHandler } from './$types';
+import { getFieldName, parse, saveImages } from '@src/utils/utils';
+
+// Components
+import widgets from '@src/components/widgets';
+
+// Auth
+import { SESSION_COOKIE_NAME } from '@src/auth';
+import { auth, getCollectionModels } from '@src/routes/api/db';
 
 // Define the GET request handler.
 export const GET: RequestHandler = async ({ params, url, cookies }) => {
 	// Get the session cookie.
-	const session = cookies.get(DEFAULT_SESSION_COOKIE_NAME) as string;
+	const session_id = cookies.get(SESSION_COOKIE_NAME) as string;
 
 	// Validate the session.
-	const user = await validate(auth, session);
+	const user = await auth.validateSession(session_id);
 
 	// Get the collection schema.
 	const collection_schema = (await getCollections()).find((c: any) => c.name == params.collection) as Schema;
 
 	// Check if the user has read access to the collection.
-	const has_read_access = (await getCollections()).find((c: any) => c.name == params.collection)?.permissions?.[user.user.role]?.read ?? true;
-	if (user.status != 200 || !has_read_access) {
+	const has_read_access = (await getCollections()).find((c: any) => c.name == params.collection)?.permissions?.[user.role]?.read ?? true;
+
+	if (user || !has_read_access) {
 		return new Response('', { status: 403 });
 	}
 
@@ -110,14 +114,15 @@ export const GET: RequestHandler = async ({ params, url, cookies }) => {
 // Define the PATCH request handler.
 export const PATCH: RequestHandler = async ({ params, request, cookies }) => {
 	// Get the session cookie.
-	const session = cookies.get(DEFAULT_SESSION_COOKIE_NAME) as string;
+	const session_id = cookies.get(SESSION_COOKIE_NAME) as string;
 
 	// Validate the session.
-	const user = await validate(auth, session);
+	const user = await auth.validateSession(session_id);
 
 	// Check if the user has write access to the collection.
-	const has_write_access = (await getCollections()).find((c: any) => c.name == params.collection)?.permissions?.[user.user.role]?.write ?? true;
-	if (user.status != 200 || !has_write_access) {
+	const has_write_access = (await getCollections()).find((c: any) => c.name == params.collection)?.permissions?.[user.role]?.write ?? true;
+
+	if (user || !has_write_access) {
 		return new Response('', { status: 403 });
 	}
 
@@ -154,14 +159,15 @@ export const PATCH: RequestHandler = async ({ params, request, cookies }) => {
 // Define the POST request handler.
 export const POST: RequestHandler = async ({ params, request, cookies }) => {
 	// Get the session cookie.
-	const session = cookies.get(DEFAULT_SESSION_COOKIE_NAME) as string;
+	const session_id = cookies.get(SESSION_COOKIE_NAME) as string;
 
 	// Validate the session.
-	const user = await validate(auth, session);
+	const user = await auth.validateSession(session_id);
 
 	// Check if the user has write access to the collection.
-	const has_write_access = (await getCollections()).find((c: any) => c.name == params.collection)?.permissions?.[user.user.role]?.write ?? true;
-	if (user.status != 200 || !has_write_access) {
+	const has_write_access = (await getCollections()).find((c: any) => c.name == params.collection)?.permissions?.[user.role]?.write ?? true;
+
+	if (user || !has_write_access) {
 		return new Response('', { status: 403 });
 	}
 
@@ -198,14 +204,15 @@ export const POST: RequestHandler = async ({ params, request, cookies }) => {
 // Define the DELETE request handler.
 export const DELETE: RequestHandler = async ({ params, request, cookies }) => {
 	// Get the session cookie.
-	const session = cookies.get(DEFAULT_SESSION_COOKIE_NAME) as string;
+	const session_id = cookies.get(SESSION_COOKIE_NAME) as string;
 
 	// Validate the session.
-	const user = await validate(auth, session);
+	const user = await auth.validateSession(session_id);
 
 	// Check if the user has write access to the collection.
-	const has_write_access = (await getCollections()).find((c: any) => c.name == params.collection)?.permissions?.[user.user.role]?.write ?? true;
-	if (user.status != 200 || !has_write_access) {
+	const has_write_access = (await getCollections()).find((c: any) => c.name == params.collection)?.permissions?.[user.role]?.write ?? true;
+
+	if (user || !has_write_access) {
 		return new Response('', { status: 403 });
 	}
 
